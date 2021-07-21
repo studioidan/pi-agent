@@ -3,21 +3,18 @@ const fs = require('fs');
 const axios = require('axios').default;
 const ip = require("ip");
 const FormData = require('form-data');
-
 const utils = require('../utils');
 const config = require('../config');
+const Foscam = require('foscam-client');
+
+const BASE_ADDRESS = 'http://52.91.135.65';
+const PORT = '5000';
+const BASE_URL = `${BASE_ADDRESS}:${PORT}/api/`;
 
 
 const cameraUsername = 'pi-admin';
 const cameraPassword = '123456@';
 const port = 88;
-
-const Foscam = require('foscam-client');
-
-// const BASE_ADDRESS = 'http://52.91.135.65:8080/api/';
-const BASE_ADDRESS = 'http://192.168.1.56';
-const PORT = '5000';
-const BASE_URL = `${BASE_ADDRESS}:${PORT}/api/`;
 
 // socket
 const io = require("socket.io-client");
@@ -41,13 +38,17 @@ module.exports.handleMultipleCameras = async (macs) => {
 
 module.exports.netScan = async function () {
     console.time();
-    await Promise.all([/*loop(1, 50),*/ loop(50, 100),/* loop(100, 150), loop(150, 255)*/]);
+    await Promise.all([loop(1, 50),/* loop(50, 100),*//* loop(100, 150), loop(150, 255)*/]);
     console.timeEnd();
     console.log(cameras.length + ' cameras were found!');
 
     // let res = await axios.post(BASE_URL + 'studio/', cameras);
-    let res = await axios.post(BASE_URL + 'studio/' + config.STUDIO_ID + '/connected-cameras', {'cameras': cameras});
-
+    try {
+        let res = await axios.post(BASE_URL + 'studio/' + config.STUDIO_ID + '/connected-cameras', {'cameras': cameras});
+        console.log(cameras.length + ' cameras were uploaded to server');
+    } catch (e) {
+        console.error('could not upload cameras to server', e);
+    }
 };
 
 async function loop(start, count) {
@@ -237,15 +238,19 @@ async function uploadImage(barcode, image, mac) {
 
     let httpConfig = {
         method: 'post',
-        url: 'http://192.168.1.56:5000/api/product/images',
+        url: BASE_URL + 'product/images',
         headers: {
             ...data.getHeaders()
         },
         data: data
     };
 
-    let res = await axios(httpConfig);
-    console.log('image uploaded')
+    try {
+        let res = await axios(httpConfig);
+        console.log('image uploaded')
+    } catch (e) {
+        console.error('could not upload image', e.stack);
+    }
     /*  .then(function (response) {
           // console.log(JSON.stringify(response.data));
           console.log('image uploaded');
