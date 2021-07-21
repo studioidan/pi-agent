@@ -38,7 +38,7 @@ module.exports.handleMultipleCameras = async (macs) => {
 
 module.exports.netScan = async function () {
     console.time();
-    await Promise.all([loop(1, 50),/* loop(50, 100),*//* loop(100, 150), loop(150, 255)*/]);
+    await Promise.all([loop(1, 50), loop(50, 100),/* loop(100, 150), loop(150, 255)*/]);
     console.timeEnd();
     console.log(cameras.length + ' cameras were found!');
 
