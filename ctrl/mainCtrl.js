@@ -40,6 +40,10 @@ module.exports.handleMultipleCameras = async (macs) => {
 
 
 module.exports.netScan = async function () {
+    netScan();
+};
+
+async function netScan() {
     console.time();
     await Promise.all([loop(1, 50), loop(50, 100),/* loop(100, 150), loop(150, 255)*/]);
     console.timeEnd();
@@ -52,7 +56,7 @@ module.exports.netScan = async function () {
     } catch (e) {
         console.error('could not upload cameras to server', e);
     }
-};
+}
 
 async function loop(start, count) {
 
@@ -195,7 +199,7 @@ function initSocket() {
     });
 
     socket.on('netScan', async (data) => {
-        const macs = data.cameras;
+        netScan();
     });
 
 }
