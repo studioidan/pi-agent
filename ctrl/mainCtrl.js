@@ -7,7 +7,10 @@ const utils = require('../utils');
 const config = require('../config');
 const Foscam = require('foscam-client');
 
-const BASE_ADDRESS = 'http://52.91.135.65';
+// const BASE_ADDRESS = 'http://52.91.135.65';
+const BASE_ADDRESS = 'http://192.168.1.56';
+
+
 const PORT = '5000';
 const BASE_URL = `${BASE_ADDRESS}:${PORT}/api/`;
 
