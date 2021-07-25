@@ -198,7 +198,7 @@ function initSocket() {
          }*/
     });
 
-    socket.on('netScan', async (data) => {
+    socket.on('net-scan', async (data) => {
         netScan();
     });
 
