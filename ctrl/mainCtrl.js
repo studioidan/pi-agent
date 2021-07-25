@@ -7,8 +7,8 @@ const utils = require('../utils');
 const config = require('../config');
 const Foscam = require('foscam-client');
 
-// const BASE_ADDRESS = 'http://52.91.135.65';
-const BASE_ADDRESS = 'http://192.168.1.56';
+ const BASE_ADDRESS = 'http://52.91.135.65';
+// const BASE_ADDRESS = 'http://192.168.1.56';
 
 
 const PORT = '5000';
@@ -44,6 +44,7 @@ module.exports.netScan = async function () {
 };
 
 async function netScan() {
+    cameras = [];
     console.time();
     await Promise.all([loop(1, 50), loop(50, 100),/* loop(100, 150), loop(150, 255)*/]);
     console.timeEnd();
