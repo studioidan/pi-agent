@@ -28,7 +28,7 @@ app.post('/multiple', async (req, res) => {
     }
 });
 
-app.post('/net-scan', async (req, res) => {
+app.get('/net-scan', async (req, res) => {
     try {
         ctrl.netScan();
         return res.json({success: true});
