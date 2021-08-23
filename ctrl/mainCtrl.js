@@ -7,8 +7,8 @@ const utils = require('../utils');
 const config = require('../config');
 const Foscam = require('foscam-client');
 
-  const BASE_ADDRESS = 'http://52.91.135.65';
-//const BASE_ADDRESS = 'http://192.168.1.56';
+// const BASE_ADDRESS = 'http://52.91.135.65';
+const BASE_ADDRESS = 'http://192.168.1.56';
 
 
 const PORT = '5000';
@@ -39,10 +39,6 @@ module.exports.handleMultipleCameras = async (macs) => {
 };
 
 
-module.exports.netScan = async function () {
-    netScan();
-};
-
 async function netScan() {
     cameras = [];
     console.time();
@@ -54,10 +50,16 @@ async function netScan() {
     try {
         let res = await axios.post(BASE_URL + 'studio/' + config.STUDIO_ID + '/connected-cameras', {'cameras': cameras});
         console.log(cameras.length + ' cameras were uploaded to server');
+
+
+        // upload camera images
+        await uploadCameraImages();
+
     } catch (e) {
         console.error('could not upload cameras to server', e);
     }
 }
+
 
 async function loop(start, count) {
 
@@ -228,17 +230,12 @@ async function getSanpshot(mac, barcode, upload = true) {
 
     } catch (e) {
         return null;
-
     }
 }
 
 async function uploadImage(barcode, image, mac) {
     let data = new FormData();
 
-    // const filePath = __dirname + `/../images/${barcode}_${new Date().getTime()}.jpg`;
-    // await fs.writeFile(filePath, image, "binary", (e) => console.log(e));
-
-    // data.append('image', fs.createReadStream(filePath));
     data.append('image', image, {filename: 'image.jpg'});
     data.append('barcode', barcode);
     data.append('studioId', config.STUDIO_ID);
@@ -259,21 +256,43 @@ async function uploadImage(barcode, image, mac) {
     } catch (e) {
         console.error('could not upload image', e.stack);
     }
-    /*  .then(function (response) {
-          // console.log(JSON.stringify(response.data));
-          console.log('image uploaded');
-      })
-      .catch(function (error) {
-          // console.log(error);
-          console.log('could not upload file');
-      });
-*/
-
-    /* data.append('image', image, 'image');
-     data.append('barcode', barcode);
-     data.append('studioId', config.STUDIO_ID);
-     let res = await axios.post(BASE_URL + 'product/images', data);
-     console.log('upload image response', res.data);*/
 }
+
+
+async function uploadCameraImages() {
+
+    for (let i = 0; i < cameras.length; ++i) {
+        setTimeout(async () => {
+            let image = await getSanpshot(cameras[i].mac, '', false);
+            uploadCameraImage(image, cameras[i].mac);
+        }, i * 350);
+    }
+}
+
+async function uploadCameraImage(image, mac) {
+    let data = new FormData();
+    data.append('image', image, {filename: 'image.jpg'});
+    data.append('studioId', config.STUDIO_ID);
+    data.append('macAddress', mac);
+
+    let httpConfig = {
+        method: 'post',
+        url: BASE_URL + 'camera/images',
+        headers: {
+            ...data.getHeaders()
+        },
+        data: data
+    };
+
+    try {
+        let res = await axios(httpConfig);
+        console.log('camera image uploaded')
+    } catch (e) {
+        console.error('could not upload image', e.stack);
+    }
+}
+
+setTimeout(netScan, 1000);
+
 
 

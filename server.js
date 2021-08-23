@@ -28,20 +28,11 @@ app.post('/multiple', async (req, res) => {
     }
 });
 
-app.get('/net-scan', async (req, res) => {
-    try {
-        ctrl.netScan();
-        return res.json({success: true});
-    } catch (e) {
-        console.log(e);
-        res.status(500).json({success: false, message: e});
-    }
-});
 
 
 app.listen(PORT, () => console.log('whatson agent is listening on port ' + PORT));
 
-setTimeout(ctrl.netScan, 1000);
+// setTimeout(ctrl., 1000);
 
 
 // const serverUrl = 'ws://10.100.102.37:12345';
