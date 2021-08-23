@@ -7,8 +7,8 @@ const utils = require('../utils');
 const config = require('../config');
 const Foscam = require('foscam-client');
 
- const BASE_ADDRESS = 'http://52.91.135.65';
-// const BASE_ADDRESS = 'http://192.168.1.56';
+//const BASE_ADDRESS = 'http://52.91.135.65';
+const BASE_ADDRESS = 'http://192.168.1.56';
 
 
 const PORT = '5000';
@@ -80,7 +80,7 @@ async function loop(start, count) {
 
         try {
 
-            let info = await utils.runWithTimeLimit(115, foscam.getDevInfo());
+            let info = await utils.runWithTimeLimit(130, foscam.getDevInfo());
             if (info == null) {
                 //  console.log('could not find camera on address: ' + ip);
                 continue;
