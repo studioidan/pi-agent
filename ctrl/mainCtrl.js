@@ -7,8 +7,8 @@ const utils = require('../utils');
 const config = require('../config');
 const Foscam = require('foscam-client');
 
-//const BASE_ADDRESS = 'http://52.91.135.65';
-const BASE_ADDRESS = 'http://192.168.1.56';
+const BASE_ADDRESS = 'http://52.91.135.65';
+// const BASE_ADDRESS = 'http://192.168.1.56';
 
 
 const PORT = '5000';
@@ -42,7 +42,8 @@ module.exports.handleMultipleCameras = async (macs) => {
 async function netScan() {
     cameras = [];
     console.time();
-    await Promise.all([loop(1, 50), loop(50, 100),/* loop(100, 150), loop(150, 255)*/]);
+    // await Promise.all([loop(1, 50), loop(50, 100),/* loop(100, 150), loop(150, 255)*/]);
+    await loop(50, 20);
     console.timeEnd();
     console.log(cameras.length + ' cameras were found!');
 
@@ -92,10 +93,15 @@ async function loop(start, count) {
                 mac: info.mac.toString(),
                 name: info.devName,
             });
+             await sleep(200);
         } catch (e) {
             //  console.error('could not get info for ip ' + ip, e);
         }
     }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 module.exports.getSnapshotSync = async () => {
