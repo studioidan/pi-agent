@@ -100,6 +100,10 @@ async function loop(start, count) {
     }
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 module.exports.getSnapshotSync = async () => {
     let path = '/Users/idan/Downloads/ffmpeg/ffmpeg';
     let cmd = '-y -rtsp_transport tcp -i rtsp://10.100.102.41:554/live/ch1 -f image2 -vf fps=fps=1 img.png';
