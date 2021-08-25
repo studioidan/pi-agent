@@ -211,6 +211,10 @@ function initSocket() {
         netScan();
     });
 
+    socket.on('field-setup', async (data) => {
+        uploadCameraImages(true);
+    });
+
 }
 
 async function getSanpshot(mac, barcode, upload = true) {
@@ -265,17 +269,17 @@ async function uploadImage(barcode, image, mac) {
 }
 
 
-async function uploadCameraImages() {
+async function uploadCameraImages(isField = false) {
 
     for (let i = 0; i < cameras.length; ++i) {
         setTimeout(async () => {
             let image = await getSanpshot(cameras[i].mac, '', false);
-            uploadCameraImage(image, cameras[i].mac);
+            uploadCameraImage(image, cameras[i].mac, isField);
         }, i * 350);
     }
 }
 
-async function uploadCameraImage(image, mac) {
+async function uploadCameraImage(image, mac, isField = false) {
     let data = new FormData();
     data.append('image', image, {filename: 'image.jpg'});
     data.append('studioId', config.STUDIO_ID);
@@ -289,6 +293,10 @@ async function uploadCameraImage(image, mac) {
         },
         data: data
     };
+
+    if (isField) {
+        httpConfig.url = BASE_URL + 'field/images'
+    }
 
     try {
         let res = await axios(httpConfig);
