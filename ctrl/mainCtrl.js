@@ -93,7 +93,7 @@ async function loop(start, count) {
                 mac: info.mac.toString(),
                 name: info.devName,
             });
-             await sleep(200);
+            await sleep(200);
         } catch (e) {
             //  console.error('could not get info for ip ' + ip, e);
         }
